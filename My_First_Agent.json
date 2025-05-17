@@ -1,0 +1,263 @@
+{
+  "name": "My First Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "7469689c-1ab5-48c2-9c4c-a25b24a8aefd",
+      "name": "When chat message received",
+      "webhookId": "7ea56d36-1de8-4b08-ae02-3179bd994788"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        220,
+        0
+      ],
+      "id": "f7d083e9-1a63-4e1d-ab26-d2b34959a7c2",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        320,
+        160
+      ],
+      "id": "9965a620-4502-4378-b44b-0b7c6967e1a6",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Searches home inventory in table",
+        "authentication": "airtableOAuth2Api",
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appM3D33NHxiNqVuT",
+          "mode": "list",
+          "cachedResultName": "The Inventory",
+          "cachedResultUrl": "https://airtable.com/appM3D33NHxiNqVuT"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl6d4GZoByiA0qNi",
+          "mode": "list",
+          "cachedResultName": "Inventory 1",
+          "cachedResultUrl": "https://airtable.com/appM3D33NHxiNqVuT/tbl6d4GZoByiA0qNi"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtableTool",
+      "typeVersion": 2.1,
+      "position": [
+        500,
+        200
+      ],
+      "id": "e9895854-e056-4177-a507-f165a9f5d4e1",
+      "name": "Search Inventory",
+      "credentials": {
+        "airtableOAuth2Api": {
+          "id": "WpdmHCyovYz1xOgm",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Updates inventory items from my table",
+        "authentication": "airtableOAuth2Api",
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appM3D33NHxiNqVuT",
+          "mode": "list",
+          "cachedResultName": "The Inventory",
+          "cachedResultUrl": "https://airtable.com/appM3D33NHxiNqVuT"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl6d4GZoByiA0qNi",
+          "mode": "list",
+          "cachedResultName": "Inventory 1",
+          "cachedResultUrl": "https://airtable.com/appM3D33NHxiNqVuT/tbl6d4GZoByiA0qNi"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Current Quantity": "={{ $fromAI('newQuantity', 'the new quantity of item being updated', 'number') }}",
+            "id": "={{ $fromAI('recordId', 'the  table ID of the item needing updated') }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Item Name",
+              "displayName": "Item Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Current Quantity",
+              "displayName": "Current Quantity",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Inventory Threshold",
+              "displayName": "Inventory Threshold",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtableTool",
+      "typeVersion": 2.1,
+      "position": [
+        640,
+        120
+      ],
+      "id": "9d70d782-e124-48c8-bb64-ce419e1ac9e6",
+      "name": "Update Inventory",
+      "credentials": {
+        "airtableOAuth2Api": {
+          "id": "WpdmHCyovYz1xOgm",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-1.5-pro-latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        140,
+        180
+      ],
+      "id": "5c8a9a9b-9ec9-4063-88ad-0a4c558589f9",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "VP25cmDf7pDzh6x9",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Inventory": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Inventory": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "84cc824a-b74c-406a-8568-0c9cd0888eb9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "89f5e14972568fcd1f79fe8ea3da5607aeb09aabcb3543886bb34444a31b07d6"
+  },
+  "id": "VRFdDAaiooVSV0UD",
+  "tags": []
+}
