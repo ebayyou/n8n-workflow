@@ -1,0 +1,499 @@
+{
+  "name": "KJ - PROMO Summarize with slack",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "a821b5c6-c2ac-450f-823a-b24032b1fe44",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -20,
+        0
+      ],
+      "id": "34e0fd57-9856-44c5-850e-5d4c205e3ec2",
+      "name": "Webhook",
+      "webhookId": "a821b5c6-c2ac-450f-823a-b24032b1fe44"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f5bea65f-146e-4677-a6e2-101902c03c3c",
+              "name": "CODE_LIST",
+              "value": "={{ $json.body.code.split(\"||\") }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        220,
+        0
+      ],
+      "id": "d2ba421f-b05a-4ee7-8ac1-4fc888522180",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "CODE_LIST",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        440,
+        0
+      ],
+      "id": "b3a0780d-691f-4523-b817-17811943ad56",
+      "name": "Split Out",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        660,
+        0
+      ],
+      "id": "68cc5d03-1075-4d79-a92d-fa1ad4ca7828",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "url": "=http://36.95.238.87:9902/api/cb-vw-promos/cb/by-login",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "code.contains",
+              "value": "={{ $json.CODE_LIST }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "size",
+              "value": "10"
+            },
+            {
+              "name": "page",
+              "value": "0"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        880,
+        100
+      ],
+      "id": "274b06f6-8a6f-4208-8b06-0c177b696d93",
+      "name": "HTTP Request",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "Y0zjt85ctNVo4KEs",
+          "name": "Bearer Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4a82719d-0779-40e3-a68e-cdda6566c870",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": 200,
+              "operator": {
+                "type": "number",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1080,
+        200
+      ],
+      "id": "2932b81e-6f4a-49ec-9cde-aa0b8e5a0748",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "errorMessage": "Error request API"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        300
+      ],
+      "id": "5f809280-4ec0-4628-aa4e-a5477d71217d",
+      "name": "Stop and Error"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0a1d8f54-b400-41ca-8bb1-63e6ce68297a",
+              "name": "promoId",
+              "value": "={{ $json.promoId }}",
+              "type": "number"
+            },
+            {
+              "id": "f3e1f447-afdb-4734-b6e7-fe6f4a1a2d0a",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "a55a02e6-4aa8-4d54-bff3-1a7645c79d8b",
+              "name": "titleEn",
+              "value": "={{ $json.titleEn }}",
+              "type": "string"
+            },
+            {
+              "id": "82f385fc-66bf-4eb3-9233-46f162b4f316",
+              "name": "code",
+              "value": "={{ $json.code }}",
+              "type": "string"
+            },
+            {
+              "id": "7bb689af-7688-42f1-a96d-226046484087",
+              "name": "promoMethod",
+              "value": "={{ $json.promoMethod.toSnakeCase() }}",
+              "type": "string"
+            },
+            {
+              "id": "782e5d7e-4742-4660-aba0-360f531eca96",
+              "name": "minAmount",
+              "value": "={{ $json.minAmount }}",
+              "type": "number"
+            },
+            {
+              "id": "8586935a-9737-401e-83c4-f8b15d52e59d",
+              "name": "minAmountFormatCurrency",
+              "value": "={{new Intl.NumberFormat('id-ID', {\n  style: 'currency',\n  currency: 'IDR',\n  minimumFractionDigits: 0,\n}).format($json.minAmount)}}",
+              "type": "string"
+            },
+            {
+              "id": "58b01891-cab0-4b59-bd5b-1eff08f403dc",
+              "name": "isUserHasClaimed",
+              "value": "={{ $json.isUserHasClaimed }}",
+              "type": "boolean"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        880,
+        -100
+      ],
+      "id": "6cffa79a-1321-4b0e-a021-bf55351eebc4",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "65d44b74-4339-4e65-936a-10e8e5856dbf",
+              "leftValue": "={{ $json.isUserHasClaimed }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1100,
+        -100
+      ],
+      "id": "d816358a-6284-484e-8da0-59a751d6eb77",
+      "name": "If1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1320,
+        0
+      ],
+      "id": "5941db10-83d5-44f1-92ff-1e4ad88b186c",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1340,
+        -200
+      ],
+      "id": "db25f03b-aade-4250-a9ab-afdb24c5014b",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleApi": {
+          "id": "Z2J0SNgXBnwPc90m",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "aggregation": "average",
+              "field": "minAmount"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.summarize",
+      "typeVersion": 1.1,
+      "position": [
+        1540,
+        -200
+      ],
+      "id": "9402995b-e42a-4cb8-b827-3583b5ec8e97",
+      "name": "Summarize"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "user",
+        "user": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "messageType": "block",
+        "blocksUi": "={\n\t\"blocks\": [\n\t\t{\n\t\t\t\"type\": \"section\",\n\t\t\t\"text\": {\n\t\t\t\t\"type\": \"mrkdwn\",\n\t\t\t\t\"text\": \"Hi Ebay :wave:\"\n\t\t\t}\n\t\t},\n\t\t{\n\t\t\t\"type\": \"section\",\n\t\t\t\"text\": {\n\t\t\t\t\"type\": \"mrkdwn\",\n\t\t\t\t\"text\": \"Your n8n workflow summarize minimal promo amount {{new Intl.NumberFormat('id-ID', {\n  style: 'currency',\n  currency: 'IDR',\n  minimumFractionDigits: 0,\n}).format($json.average_minAmount)}} user is already use and save to your google sheet\"\n\t\t\t}\n\t\t},\n\t\t{\n\t\t\t\"type\": \"section\",\n\t\t\t\"text\": {\n\t\t\t\t\"type\": \"mrkdwn\",\n\t\t\t\t\"text\": \"Here is a link to your access Google Sheets:\"\n\t\t\t}\n\t\t},\n\t\t{\n\t\t\t\"type\": \"actions\",\n\t\t\t\"elements\": [\n\t\t\t\t{\n\t\t\t\t\t\"type\": \"button\",\n\t\t\t\t\t\"text\": {\n\t\t\t\t\t\t\"type\": \"plain_text\",\n\t\t\t\t\t\t\"text\": \"Google Sheets\",\n\t\t\t\t\t\t\"emoji\": true\n\t\t\t\t\t},\n\t\t\t\t\t\"value\": \"https://docs.google.com/spreadsheets/d/1C6TKmlZDCJDkGIanU2fBPKxRPzKELcV1TM3b0mNwg5I/edit?gid=0#gid=0\"\n\t\t\t\t}\n\t\t\t]\n\t\t}\n\t]\n}",
+        "text": "New Updated summarize from n8n workflow",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        1720,
+        -200
+      ],
+      "id": "d7db6df0-8f26-4f5d-bbec-5b4a7edb13af",
+      "name": "Slack",
+      "webhookId": "fc5c658f-1052-47c8-9810-00134aeac7ae",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "0MFbLTAEGxM13oqS",
+          "name": "Slack account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize": {
+      "main": [
+        [
+          {
+            "node": "Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "42bef1a7-dc41-42d7-a670-5ab1c03ecc3f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "89f5e14972568fcd1f79fe8ea3da5607aeb09aabcb3543886bb34444a31b07d6"
+  },
+  "id": "RkVsQaYbG685qZTg",
+  "tags": []
+}
