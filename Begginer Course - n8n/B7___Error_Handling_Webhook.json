@@ -1,0 +1,323 @@
+{
+  "name": "B7 - Error Handling Webhook",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "f595335c-61ea-4427-89f1-c21a1dd17bbc",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -80,
+        0
+      ],
+      "id": "86a2621e-b897-47c1-a7ca-5b4dc493ae55",
+      "name": "Webhook",
+      "webhookId": "f595335c-61ea-4427-89f1-c21a1dd17bbc"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.event }}",
+                    "rightValue": "account_created",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "b86907c2-45f4-4f68-b018-1f8d360ba1ad"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "798cd3dd-e618-4d9c-853c-cd710b87affe",
+                    "leftValue": "={{ $json.body.event }}",
+                    "rightValue": "team_member_invited",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "9bec18e0-0e04-438d-899d-2660fe26b7b9",
+                    "leftValue": "={{ $json.body.event }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notExists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "b70f6154-d126-4c5d-93a2-8a7164f75e29",
+                    "leftValue": "={{ $json.body.event }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        340,
+        -80
+      ],
+      "id": "e74bbb87-9ac0-4fdd-9c46-dd23c77d4694",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "user",
+        "user": {
+          "__rl": true,
+          "value": "U08RW2YS5LL",
+          "mode": "list",
+          "cachedResultName": "ebayyouanggoro.e"
+        },
+        "text": "={{ $json.body.email }} just invited a team member",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        580,
+        -240
+      ],
+      "id": "95c9968e-9af4-4619-8006-4bb4fff4117b",
+      "name": "Slack",
+      "webhookId": "a1aca129-4eee-40d2-af6b-c661509d70d3",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "nm4QLGzwymTmGzfe",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "channel",
+        "operation": "invite",
+        "channelId": {
+          "__rl": true,
+          "value": "C08RW2Z699A",
+          "mode": "list",
+          "cachedResultName": "all-ebay-team"
+        },
+        "userIds": "={{ $json.body.email }} just invited a team member"
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        580,
+        -80
+      ],
+      "id": "71f21ca4-1f4e-4472-ba12-b630dc331327",
+      "name": "Slack1",
+      "webhookId": "ec92f687-1a1a-4963-8b0f-1d02d1ef1556",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "nm4QLGzwymTmGzfe",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c0562898-6d0f-4c41-8fad-95578adce506",
+              "leftValue": "={{ $json.body.email }}",
+              "rightValue": "@",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        100,
+        0
+      ],
+      "id": "b7e980bc-4c95-4caa-b024-1ff707aa5cf6",
+      "name": "email valid ?"
+    },
+    {
+      "parameters": {
+        "errorMessage": "invalid email"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        300,
+        180
+      ],
+      "id": "59211bf8-baad-4f7b-b40c-427a1bf70922",
+      "name": "Stop and Error"
+    },
+    {
+      "parameters": {
+        "errorMessage": "invalid event"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        580,
+        80
+      ],
+      "id": "a7542f2a-44ed-4a34-8ab9-0cb12c0e2137",
+      "name": "Stop and Error1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "email valid ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Slack",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Slack1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "email valid ?": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveExecutionProgress": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "a6c15734-a584-4628-babc-a80893d73a66",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "92ddc221e2470f51e4080ec80cdbb4ff99792bcddff88f443959a4f9d8b09326"
+  },
+  "id": "VjeKxGImBl8FgKdK",
+  "tags": []
+}

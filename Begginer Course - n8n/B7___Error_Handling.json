@@ -1,0 +1,70 @@
+{
+  "name": "B7 - Error Handling",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "c6304a9b-a201-45ad-8c92-a98f993483ff",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08RN44T5FY",
+          "mode": "list",
+          "cachedResultName": "n8n-errors"
+        },
+        "text": "=n8n Error :\n\n- workflow: {{ $json.workflow.name }}\n- execution URL:  {{ $json.execution.url }}\n- error message : {{ $json.execution.error.message }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        220,
+        0
+      ],
+      "id": "e21de388-bd32-4c6e-80a9-31986c725eea",
+      "name": "Slack",
+      "webhookId": "a42a7d94-c8cf-4f68-ba5b-68caad2b0c2c",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "nm4QLGzwymTmGzfe",
+          "name": "Slack account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "5ddfc007-4361-438f-926f-7fa298172821",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "92ddc221e2470f51e4080ec80cdbb4ff99792bcddff88f443959a4f9d8b09326"
+  },
+  "id": "nBkCoC8TS09Aqkol",
+  "tags": []
+}

@@ -1,0 +1,363 @@
+{
+  "name": "B8 - Debugging",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "df314cdb-6fdb-43e2-8b49-8697c3c2ffc6",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "631f5bb6-09be-479b-aa52-eef02a0e54e4",
+      "name": "Webhook",
+      "webhookId": "df314cdb-6fdb-43e2-8b49-8697c3c2ffc6"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1jriQe58oYUVfgl5Htf5vtzjSiZDzQlKliRDhQm9e--k",
+          "mode": "list",
+          "cachedResultName": "n8n get user",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jriQe58oYUVfgl5Htf5vtzjSiZDzQlKliRDhQm9e--k/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jriQe58oYUVfgl5Htf5vtzjSiZDzQlKliRDhQm9e--k/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "id",
+              "lookupValue": "={{ $json.body.id}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        500,
+        -220
+      ],
+      "id": "958ea492-3cbb-4362-b013-1a4dbe80d6f9",
+      "name": "Google Sheets",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "yDkARTdjkvhUx82Q",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "1406a39c-a9cf-4199-83a9-c1ece7253d73",
+              "leftValue": "={{ $json.body.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "78877c40-a9f8-41c0-b9b4-c23dd7b695a5",
+      "name": "id ?"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "1406a39c-a9cf-4199-83a9-c1ece7253d73",
+              "leftValue": "={{ $json.body.email }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        380,
+        140
+      ],
+      "id": "2f9e99fe-50f6-4557-a343-4a91152398fa",
+      "name": "email ?"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1jriQe58oYUVfgl5Htf5vtzjSiZDzQlKliRDhQm9e--k",
+          "mode": "list",
+          "cachedResultName": "n8n get user",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jriQe58oYUVfgl5Htf5vtzjSiZDzQlKliRDhQm9e--k/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jriQe58oYUVfgl5Htf5vtzjSiZDzQlKliRDhQm9e--k/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "email",
+              "lookupValue": "={{ $json.body.email}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        560,
+        40
+      ],
+      "id": "4582f6de-ed81-48d9-9eed-8bdd7cbe10c1",
+      "name": "Google Sheets1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "yDkARTdjkvhUx82Q",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "errorMessage": "no ID or Email"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        560,
+        240
+      ],
+      "id": "1001df2c-d688-43ae-947f-deb716c785a5",
+      "name": "Stop and Error"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2856d368-299e-43ae-a5fd-09d3235c58f4",
+              "leftValue": "={{ $json.body.email }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        720,
+        -80
+      ],
+      "id": "06e98f78-3f5e-41e7-a854-6d56ba94952d",
+      "name": "Email exist ?"
+    },
+    {
+      "parameters": {
+        "errorMessage": "Contact not found in database"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        920,
+        0
+      ],
+      "id": "3a0b0717-c33a-43f0-a6bc-0262dd8e7491",
+      "name": "Stop and Error1"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "user",
+        "user": {
+          "__rl": true,
+          "value": "U08RW2YS5LL",
+          "mode": "list",
+          "cachedResultName": "ebayyouanggoro.e"
+        },
+        "text": "=Info for: {{ $json.email }}\n\nFirst name: {{ $json.fname }}\nLast name : {{ $json.lname }}\nCompany : {{ $json.company }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        920,
+        -180
+      ],
+      "id": "f3e23f21-9057-479a-b296-0fd1bba2d0b6",
+      "name": "Slack",
+      "webhookId": "2097e260-dc44-4097-9a66-63b0c31ed467",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "nm4QLGzwymTmGzfe",
+          "name": "Slack account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "id ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Email exist ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "id ?": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "email ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "email ?": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets1": {
+      "main": [
+        [
+          {
+            "node": "Email exist ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email exist ?": {
+      "main": [
+        [
+          {
+            "node": "Slack",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "0b27c8a6-fc80-4385-bd8e-ed4ddb61724c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "92ddc221e2470f51e4080ec80cdbb4ff99792bcddff88f443959a4f9d8b09326"
+  },
+  "id": "YdHL86Zi739wagoL",
+  "tags": []
+}

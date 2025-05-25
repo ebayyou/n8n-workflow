@@ -1,0 +1,219 @@
+{
+  "name": "B6 - implementation webhook",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "965d20de-f968-4ce7-b80e-deab18121b1d",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "e97eac0e-d3e4-4d95-bd05-28e1041f6fc3",
+      "name": "Webhook",
+      "webhookId": "965d20de-f968-4ce7-b80e-deab18121b1d"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d6efc418-4dda-4f7b-afab-0271b30adae7",
+              "leftValue": "={{ $json.body.event }}",
+              "rightValue": "invited_team_leader",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "3313d0b0-957e-4c13-b3f6-5dad5d1eb765",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d0d281e0-bb91-4df9-abff-9d28a0e7660b",
+              "leftValue": "={{ $json.body.event }}",
+              "rightValue": "invited_team_workflow",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        440,
+        100
+      ],
+      "id": "35f83ebc-6672-45a3-9fae-b3fe471d9988",
+      "name": "If1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        660,
+        200
+      ],
+      "id": "a9cc60ef-d434-4d34-9c98-e49fbb7d10d0",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "user",
+        "user": {
+          "__rl": true,
+          "value": "U08RW2YS5LL",
+          "mode": "list",
+          "cachedResultName": "ebayyouanggoro.e"
+        },
+        "text": "={{ $json.body.email }} just invited as a team workflow",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        720,
+        0
+      ],
+      "id": "21743aa7-1235-4387-9e67-453e33ff54d2",
+      "name": "Slack",
+      "webhookId": "12a6f0ef-7f34-4fd9-887f-284aa9462fe4",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "nm4QLGzwymTmGzfe",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "user",
+        "user": {
+          "__rl": true,
+          "value": "U08RW2YS5LL",
+          "mode": "list",
+          "cachedResultName": "ebayyouanggoro.e"
+        },
+        "text": "={{ $json.body.email }} just invited as a team leader",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        440,
+        -100
+      ],
+      "id": "179ff64a-76bc-47f8-829f-2ee2567b64ff",
+      "name": "Slack1",
+      "webhookId": "25b4007e-07bc-4bd0-a9a8-c3ef68ae9d7f",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "nm4QLGzwymTmGzfe",
+          "name": "Slack account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Slack1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Slack",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "d4a3fa0e-596a-4546-8671-56c92d696b62",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "92ddc221e2470f51e4080ec80cdbb4ff99792bcddff88f443959a4f9d8b09326"
+  },
+  "id": "9fcs4RHaXqu7zMkG",
+  "tags": []
+}
