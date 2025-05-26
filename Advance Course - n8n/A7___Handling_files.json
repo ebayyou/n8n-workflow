@@ -1,0 +1,200 @@
+{
+  "name": "A7 - Handling files",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "ff7bb2a5-31f5-463b-b9c4-c7fda71d048a",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://n8n.io/n8n-logo.png",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "943ea53c-4446-4e6b-99dd-6c4bfe396581",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "url": "https://ebayyou.app.n8n.cloud/icons/n8n-nodes-base/dist/nodes/HttpRequest/httprequest.dark.svg",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        440,
+        0
+      ],
+      "id": "2e31e5f2-d7d3-440a-b184-5bb57b1be9e3",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "operation": "compress",
+        "binaryPropertyName": "data,data",
+        "fileName": "compressed.zip"
+      },
+      "type": "n8n-nodes-base.compression",
+      "typeVersion": 1.1,
+      "position": [
+        660,
+        0
+      ],
+      "id": "c6b55bd7-39f8-41c8-b8f0-a22427044fca",
+      "name": "Compression"
+    },
+    {
+      "parameters": {
+        "content": "## Example Data\n",
+        "height": 280,
+        "width": 440
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        160,
+        200
+      ],
+      "id": "4c544fcb-a550-4d2d-8bd4-644777594c65",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.compression",
+      "typeVersion": 1.1,
+      "position": [
+        440,
+        280
+      ],
+      "id": "dc34b5e5-26f2-4df3-9967-1122f27c6386",
+      "name": "Decompress"
+    },
+    {
+      "parameters": {
+        "jsCode": "let result = [];\n\nfor (item of items) {\n  for (key of Object.keys(item.binary)) {\n    result.push(({\n      json: {\n        fileName: item.binary[key].fileName \n      },\n      binary: {\n        data: item.binary[key]\n      }\n    }))\n  }\n}\n\nreturn result;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        280
+      ],
+      "id": "6e4b0f78-e3b8-4e2d-aa27-de03d7684f05",
+      "name": "Split up binary data"
+    },
+    {
+      "parameters": {
+        "content": "## Transformation",
+        "height": 280,
+        "width": 280
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        640,
+        200
+      ],
+      "id": "31a9e046-496b-4742-8d5a-829618604654",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "url": "https://n8n.io/n8n-logo.png",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        280
+      ],
+      "id": "09ba5313-0521-4d89-bfa5-56d2e8a6c907",
+      "name": "Download Example Data"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Download Example Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Compression",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compression": {
+      "main": [
+        []
+      ]
+    },
+    "Decompress": {
+      "main": [
+        [
+          {
+            "node": "Split up binary data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Example Data": {
+      "main": [
+        [
+          {
+            "node": "Decompress",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "3dd54858-602e-425d-a9d6-642ee34400e7",
+  "meta": {
+    "instanceId": "92ddc221e2470f51e4080ec80cdbb4ff99792bcddff88f443959a4f9d8b09326"
+  },
+  "id": "npWvLB2JaBHGFJrr",
+  "tags": []
+}

@@ -1,0 +1,62 @@
+{
+  "name": "A2 - cURL import",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "4df2d331-f975-4e2c-b34f-f7e79106c3c7",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "url": "http://36.95.238.87:9901/api/cb-vw-paws/by-login",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "2f5f429c-b6e4-47b8-b8a4-88d437543882",
+      "name": "HTTP Request",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "Xk9TJyMXumzJcSpD",
+          "name": "Bearer Auth account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "712a10f6-05e2-4c41-b66e-8beadd7fdcd2",
+  "meta": {
+    "instanceId": "92ddc221e2470f51e4080ec80cdbb4ff99792bcddff88f443959a4f9d8b09326"
+  },
+  "id": "BAfDUlXuljJfw82z",
+  "tags": []
+}

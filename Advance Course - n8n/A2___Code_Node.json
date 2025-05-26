@@ -1,0 +1,112 @@
+{
+  "name": "A2 - Code Node",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "74f61094-da19-495a-87f2-5bd196b1c01b",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "jsCode": "var total = 0;\n\n// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  total += item.json.totalOrderValue;\n  console.log(\"total: \", total)\n}\n\nreturn {\"total\": total};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        380,
+        -140
+      ],
+      "id": "c94174f9-2630-47f7-b1b9-155c92290d1d",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1MbGcf__qV9w0LAQf6WsGxPzL1aCyX70Wt86nGpcA7Rg",
+          "mode": "list",
+          "cachedResultName": "n8n - node code",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MbGcf__qV9w0LAQf6WsGxPzL1aCyX70Wt86nGpcA7Rg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MbGcf__qV9w0LAQf6WsGxPzL1aCyX70Wt86nGpcA7Rg/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        180,
+        0
+      ],
+      "id": "e25dff74-8172-4e59-9311-e04cdb8e5273",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "yDkARTdjkvhUx82Q",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Add a new field called 'myNewField' to the JSON of the item\nvar avarageValue = $input.item.json.totalOrderValue / $input.item.json.orderCount\n\n$input.item.json.avarageValue = avarageValue; \n\nreturn $input.item;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        380,
+        0
+      ],
+      "id": "a6e51894-0280-4796-98d5-8e5bcf491b07",
+      "name": "Code1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "6ac9fe08-42bf-4892-b34d-5f8bb35d3a46",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "92ddc221e2470f51e4080ec80cdbb4ff99792bcddff88f443959a4f9d8b09326"
+  },
+  "id": "BUV6eW2gj6MrxPMJ",
+  "tags": []
+}

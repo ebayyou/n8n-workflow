@@ -1,0 +1,292 @@
+{
+  "name": "A5 -  Error workflows",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "6da67cb4-603f-4264-a34e-1480cb1c1850",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "workflowId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.n8n",
+      "typeVersion": 1,
+      "position": [
+        180,
+        -140
+      ],
+      "id": "a8c4d08d-90e5-4fd1-9ff0-aae35bcead98",
+      "name": "n8n"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a91cfc59-52b9-429b-8f32-edfeca82d3f2",
+              "name": "workflow_owner",
+              "value": "={{ $json.tags[0].name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        340,
+        -140
+      ],
+      "id": "b5161809-a3a1-4d1e-991e-a3077472c4f4",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        460,
+        20
+      ],
+      "id": "cab27171-f9cd-49d6-9bdb-da1b52a54cc4",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3f586c70-9984-4d3e-85d0-3f6230963cb1",
+              "name": "message",
+              "value": "=Error: {{ $json.execution.error.message }}\n\nLink to failed execution: {{ $json.execution.url }}\n\nFailed execution id: {{ $json.execution.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        180,
+        140
+      ],
+      "id": "9b3ba82f-d529-4261-93c2-61abf0908308",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    \"name\": \"bayu\",\n    \"emai\": \"bayu@not.id\"\n  },\n  {\n    \"name\": \"exo\",\n    \"emai\": \"exo@not.id\"\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        640,
+        -140
+      ],
+      "id": "31901494-e58a-4e83-8db3-75fbb744e5e9",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "advanced": true,
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "name",
+              "field2": "workflow_owner"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        820,
+        20
+      ],
+      "id": "bad0e4ea-8c7e-47e3-b858-e0b45a9362ac",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "Error on your workflow",
+        "message": "Message!",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1060,
+        -100
+      ],
+      "id": "7a341d8a-a557-4b49-9ef8-4ceeccc24eed",
+      "name": "Gmail",
+      "webhookId": "ff6916be-7f4d-4ce9-9d8c-6ed24d19d6fd",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "HTjPd3POC5BUKr8Y",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "nBkCoC8TS09Aqkol",
+          "mode": "list",
+          "cachedResultName": "B7 - Error Handling"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        1060,
+        100
+      ],
+      "id": "071aa304-7c35-4cdb-b5e3-ec5761ffd698",
+      "name": "Execute Workflow"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "n8n",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "n8n": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b897904c-90f2-49c7-b0be-501dc149975d",
+  "meta": {
+    "instanceId": "92ddc221e2470f51e4080ec80cdbb4ff99792bcddff88f443959a4f9d8b09326"
+  },
+  "id": "oHYWLalbPdoxrE70",
+  "tags": []
+}

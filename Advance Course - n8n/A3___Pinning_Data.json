@@ -1,0 +1,131 @@
+{
+  "name": "A3 - Pinning Data",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "27cf727e-9442-4213-9cbb-4ecb1842275d",
+      "name": "When clicking ‘Test workflow’"
+    }
+  ],
+  "pinData": {
+    "When clicking ‘Test workflow’": [
+      {
+        "json": {
+          "id": 1,
+          "first_name": "Lin",
+          "last_name": "Dimond",
+          "email": "ldimond0@domainmarket.com",
+          "gender": "Female",
+          "ip_address": "248.186.111.181"
+        }
+      },
+      {
+        "json": {
+          "id": 2,
+          "first_name": "Raffarty",
+          "last_name": "Lochran",
+          "email": "rlochran1@etsy.com",
+          "gender": "Male",
+          "ip_address": "250.203.199.18"
+        }
+      },
+      {
+        "json": {
+          "id": 3,
+          "first_name": "Alic",
+          "last_name": "Looker",
+          "email": "alooker2@sohu.com",
+          "gender": "Male",
+          "ip_address": "72.75.70.110"
+        }
+      },
+      {
+        "json": {
+          "id": 4,
+          "first_name": "Nollie",
+          "last_name": "Milvarnie",
+          "email": "nmilvarnie3@newsvine.com",
+          "gender": "Non-binary",
+          "ip_address": "230.52.34.9"
+        }
+      },
+      {
+        "json": {
+          "id": 5,
+          "first_name": "Silvain",
+          "last_name": "Whittlesee",
+          "email": "swhittlesee4@fastcompany.com",
+          "gender": "Male",
+          "ip_address": "159.195.58.122"
+        }
+      },
+      {
+        "json": {
+          "id": 6,
+          "first_name": "Richart",
+          "last_name": "Grumble",
+          "email": "rgrumble5@t.co",
+          "gender": "Male",
+          "ip_address": "237.93.147.145"
+        }
+      },
+      {
+        "json": {
+          "id": 7,
+          "first_name": "Vivianne",
+          "last_name": "Surgeon",
+          "email": "vsurgeon6@eventbrite.com",
+          "gender": "Female",
+          "ip_address": "19.201.186.187"
+        }
+      },
+      {
+        "json": {
+          "id": 8,
+          "first_name": "Jo",
+          "last_name": "D'Enrico",
+          "email": "jdenrico7@rediff.com",
+          "gender": "Female",
+          "ip_address": "67.146.149.94"
+        }
+      },
+      {
+        "json": {
+          "id": 9,
+          "first_name": "Heinrik",
+          "last_name": "Van Vuuren",
+          "email": null,
+          "gender": "Male",
+          "ip_address": "89.214.128.161"
+        }
+      },
+      {
+        "json": {
+          "id": 10,
+          "first_name": "Patric",
+          "last_name": "Crayden",
+          "email": "pcrayden9@domainmarket.com",
+          "gender": "Male",
+          "ip_address": "159.51.7.252"
+        }
+      }
+    ]
+  },
+  "connections": {},
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ece1f58d-b25e-4ec3-8d9f-8b7ca74cb760",
+  "meta": {
+    "instanceId": "92ddc221e2470f51e4080ec80cdbb4ff99792bcddff88f443959a4f9d8b09326"
+  },
+  "id": "luCmgOdHtv45LzNi",
+  "tags": []
+}

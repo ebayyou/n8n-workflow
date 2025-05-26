@@ -1,0 +1,541 @@
+{
+  "name": "A6 - Build a full example",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Please field this out",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "URL"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "f32b0a38-212c-4da2-b7d6-f73c19ada037",
+      "name": "On form submission",
+      "webhookId": "e8fb1b35-c686-4277-b16a-627a29cab4e5"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "94d7c288-9375-467a-90cd-41e4d1848aff",
+              "name": "URL_LIST",
+              "value": "={{ $json.URL.split(', ') }}",
+              "type": "array"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        220,
+        0
+      ],
+      "id": "8d0e4076-a6d8-4470-905d-0d4129ff7653",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "URL_LIST",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        440,
+        0
+      ],
+      "id": "3188a7ce-3925-4c2c-84d3-680a13b079f1",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        640,
+        0
+      ],
+      "id": "56748415-5a81-4881-84c1-47f3a806f039",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "url": "https://api.peopledatalabs.com/v5/company/search",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "size",
+              "value": "1"
+            },
+            {
+              "name": "sql",
+              "value": "={{ \"SELECT * from company where website='\"+$json.URL_LIST+\"'\" }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        900,
+        160
+      ],
+      "id": "a9b02132-3b89-4417-aa51-7a0a43051c1d",
+      "name": "HTTP Request",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "Xk9TJyMXumzJcSpD",
+          "name": "Bearer Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "86460e31-44aa-43fa-b6bb-95dc0691e0ec",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": 200,
+              "operator": {
+                "type": "number",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1120,
+        160
+      ],
+      "id": "b3de935e-5ec8-46ad-a795-dad8d05eca60",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "errorMessage": "ERROR on PDL environment"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        1360,
+        140
+      ],
+      "id": "c1810045-50c7-488c-8fdf-be7a10a5ac29",
+      "name": "Stop and Error"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b5eb010b-f2e7-4b64-b025-35b1ad0b6dd9",
+              "name": "name",
+              "value": "={{ $json.data[0].name }}",
+              "type": "string"
+            },
+            {
+              "id": "9dde2983-44e5-4616-9130-620ac2f70e93",
+              "name": "employees",
+              "value": "={{ $json.data[0].employee_count }}",
+              "type": "number"
+            },
+            {
+              "id": "5728d691-8678-491f-baa8-ab188633048e",
+              "name": "country",
+              "value": "={{ $json.data[0].location.country }}",
+              "type": "string"
+            },
+            {
+              "id": "69074c34-9fe2-4877-96aa-2425f4c8f106",
+              "name": "continent",
+              "value": "={{ $json.data[0].location.continent }}",
+              "type": "string"
+            },
+            {
+              "id": "323847c5-c7c6-4295-9afc-ff2040356f24",
+              "name": "funding",
+              "value": "={{ $json.data[0].total_funding_raised }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        880,
+        -140
+      ],
+      "id": "dfe69ea1-83f4-4532-bbc9-edb914ea7f91",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "327d0328-c258-44a1-947e-1ba3e0257a56",
+              "leftValue": "={{ $json.continent }}",
+              "rightValue": "europe",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1100,
+        -140
+      ],
+      "id": "8fe8aebf-2a43-448f-87ca-9d8b849b0b86",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1C6TKmlZDCJDkGIanU2fBPKxRPzKELcV1TM3b0mNwg5I",
+          "mode": "list",
+          "cachedResultName": "n8n - company sheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1C6TKmlZDCJDkGIanU2fBPKxRPzKELcV1TM3b0mNwg5I/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1C6TKmlZDCJDkGIanU2fBPKxRPzKELcV1TM3b0mNwg5I/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $json.name }}",
+            "Employees": "={{ $json.employees }}",
+            "Country": "={{ $json.country }}",
+            "Funding": "={{ $json.funding }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Employees",
+              "displayName": "Employees",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Country",
+              "displayName": "Country",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Funding",
+              "displayName": "Funding",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1340,
+        -240
+      ],
+      "id": "b1507f07-7baf-44bf-a1d2-a96a1b03b2ce",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "yDkARTdjkvhUx82Q",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1340,
+        -40
+      ],
+      "id": "e0ad9b7b-ccd6-44c0-9771-04847decc17a",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "field": "name"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.summarize",
+      "typeVersion": 1.1,
+      "position": [
+        1560,
+        -240
+      ],
+      "id": "068fdcea-e7db-46d0-8e08-848b2900dccb",
+      "name": "Summarize"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "user",
+        "user": {
+          "__rl": true,
+          "value": "U08RW2YS5LL",
+          "mode": "list",
+          "cachedResultName": "ebayyouanggoro.e"
+        },
+        "messageType": "block",
+        "blocksUi": "={\n\t\"blocks\": [\n\t\t{\n\t\t\t\"type\": \"section\",\n\t\t\t\"text\": {\n\t\t\t\t\"type\": \"mrkdwn\",\n\t\t\t\t\"text\": \"Hi Ebay :wave:\"\n\t\t\t}\n\t\t},\n\t\t{\n\t\t\t\"type\": \"section\",\n\t\t\t\"text\": {\n\t\t\t\t\"type\": \"mrkdwn\",\n\t\t\t\t\"text\": \"Your n8n workflow just added {{ $json.count_name }} companies to your google sheet\"\n\t\t\t}\n\t\t},\n\t\t{\n\t\t\t\"type\": \"section\",\n\t\t\t\"text\": {\n\t\t\t\t\"type\": \"mrkdwn\",\n\t\t\t\t\"text\": \"Here is a link to your access Google Sheets:\"\n\t\t\t}\n\t\t},\n\t\t{\n\t\t\t\"type\": \"actions\",\n\t\t\t\"elements\": [\n\t\t\t\t{\n\t\t\t\t\t\"type\": \"button\",\n\t\t\t\t\t\"text\": {\n\t\t\t\t\t\t\"type\": \"plain_text\",\n\t\t\t\t\t\t\"text\": \"Google Sheets\",\n\t\t\t\t\t\t\"emoji\": true\n\t\t\t\t\t},\n\t\t\t\t\t\"value\": \"https://docs.google.com/spreadsheets/d/1C6TKmlZDCJDkGIanU2fBPKxRPzKELcV1TM3b0mNwg5I/edit?gid=0#gid=0\"\n\t\t\t\t}\n\t\t\t]\n\t\t}\n\t]\n}",
+        "text": "New n8n workflow",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        1780,
+        -240
+      ],
+      "id": "7f4fef6b-6116-44ab-89da-ab4915d81eac",
+      "name": "Slack",
+      "webhookId": "0b787ab2-4f58-406d-985f-ce8a3be9d07d",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "nm4QLGzwymTmGzfe",
+          "name": "Slack account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "On form submission": [
+      {
+        "json": {
+          "URL": "google.com, instagram.com, spendesk.com, pennylane.com",
+          "submittedAt": "2025-05-12T18:38:37.757+07:00",
+          "formMode": "test"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize": {
+      "main": [
+        [
+          {
+            "node": "Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a25fb32f-d0a0-490f-870b-57e3ef15fc3d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "92ddc221e2470f51e4080ec80cdbb4ff99792bcddff88f443959a4f9d8b09326"
+  },
+  "id": "5wF87tCJ2dSpFJwX",
+  "tags": []
+}
