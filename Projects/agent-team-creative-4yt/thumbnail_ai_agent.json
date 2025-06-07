@@ -1,0 +1,349 @@
+{
+  "name": "thumbnail-ai-agent",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "idea"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "16861cd5-51f6-44a1-a28e-c0c49568646d",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are **Thumbnail Agent**, a focused assistant that transform a video idea into a precise image-generation prompt for creating a Youtube Thumbnail.\n\n**When invoked, follow these rules exactly:** \n\n1. **Input**\n  - A short video idea or topic description (plus any angle or target keywords).\n\n\n2. **Output**\n  - A single, detailed prompt optimized for a text-to-image generator.\n  - Return **only** the prompt-no explanations or extra text.\n\n3. **Prompt Requirement**\n  - **Subject & Focus:** Cleary name the main visual element (e.g. person, object, scene).\n  - **Action & Emotions:** Specify what's happening the desired mood or energy.\n  - **Composition & Layout:** Mention framing (close-up, mid shot), perspective (overhead, eye-level), and placement of key elements.\n  - **Text Overlay:** Include any headline call-to-action text to appear on the thubmnail, with approximate placement (top/bottom/center).\n  - **Style & Aesthetic:** Define art style (realistic, cartoon, 3D render), color palette (bold contrast, bright saturations), and lightning (high contrast, soft glow).\n  - **Readability & Impact:** Ensure the subject and text will stand out at small sizes.\n\n4. **Formatting & Tone:**\n  - Write in clear, descriptive English as a single paragraph.\n  - Use imperative, vivid language (\"Show\", \"Feature\", \"Highlight\").\n  - Avoid technical jargon-focus on visual details.\n\n\n---\n\nExample :\n\nShow a dynamic, close-up view of a humanoid robot holding a glowing brain-shaped circuit, set againts a dark, futuristic cityscape. Place bold, uppercase text \"BUILD AI AGENTS\" at the top in neon blue with a subtle drop shadow, and smaller \"Step-by-step Guide\" at color pallete with glowing highlights and dramatic rim lightning to make the robot and text pop on small screens. ",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        220,
+        0
+      ],
+      "id": "c3c697d1-fdb2-4936-bfd7-b2e242856f91",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        140,
+        200
+      ],
+      "id": "d326f394-7d3f-489f-9f54-7982766161fa",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "kqSaeo55zPb48Oms",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://kieai.erweima.ai/api/v1/gpt4o-image/generate",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer cdc7b030e833f8556439139470cd4d4d"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "filesUrl",
+              "value": "[]"
+            },
+            {
+              "name": "prompt",
+              "value": "={{ $json.output }}"
+            },
+            {
+              "name": "size",
+              "value": "1:1"
+            },
+            {
+              "name": "isEnhance",
+              "value": "false"
+            },
+            {
+              "name": "uploadCn",
+              "value": "false"
+            },
+            {
+              "name": "nVariants",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        980,
+        -440
+      ],
+      "id": "a1af8294-9db6-4670-8a96-76d6e06a7a7e",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://kieai.erweima.ai/api/v1/gpt4o-image/download-url",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer cdc7b030e833f8556439139470cd4d4d"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "taskId",
+              "value": "={{ $json.data.taskId }}"
+            },
+            {
+              "name": "url",
+              "value": "null"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        760,
+        -440
+      ],
+      "id": "816f6b72-7ed2-4cf0-9abb-d681ad65744c",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "url": "https://kieai.erweima.ai/api/v1/gpt4o-image/record-info",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "taskId",
+              "value": "={{ $json.data.taskId }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer cdc7b030e833f8556439139470cd4d4d"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1200,
+        -440
+      ],
+      "id": "d3ded4a0-bca8-460e-bec6-82d2bab507bf",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.runware.ai/v1",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer JXmiQipKC7y8DeIAsuq3PX6trZJ92GfR"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=[\n  {\n    \"positivePrompt\": \"Bitcoin for the next system monetery\",\n    \"taskType\": \"imageInference\",\n    \"taskUUID\": \"39d7207a-87ef-4c93-8082-1431f9c1dc97\",\n    \"width\": 512,\n    \"height\": 512,\n    \"model\": \"civitai:102438@133677\",\n    \"numberResults\": 1\n  }\n]",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        580,
+        0
+      ],
+      "id": "d5c0789f-b78a-4216-9612-83ed18067505",
+      "name": "HTTP Request3"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.data[0].imageURL }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        800,
+        0
+      ],
+      "id": "fb88dc3a-6edc-4179-abfb-c7bd1b516371",
+      "name": "HTTP Request4"
+    },
+    {
+      "parameters": {
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "root",
+          "cachedResultName": "/ (Root folder)"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1200,
+        -220
+      ],
+      "id": "77d97b61-9698-4883-b005-3eba584a6881",
+      "name": "Google Drive",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "0x396tZp7Sx04Abd",
+          "name": "Google Drive account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Google Drive": [
+      {
+        "json": {
+          "name": "First item",
+          "code": 1
+        }
+      },
+      {
+        "json": {
+          "name": "Second item",
+          "code": 2
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        []
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        []
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        []
+      ]
+    },
+    "HTTP Request3": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request4": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "8021dcf5-541b-40c6-8e60-278679889ebf",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b3428248ffba287a78b509c3f6955c3c87c8772f2d193285ba30522fe843eefb"
+  },
+  "id": "pbXWrGd4HuRwQWai",
+  "tags": []
+}

@@ -1,0 +1,129 @@
+{
+  "name": "title-ai-agent",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "idea"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "728d928a-b838-4c52-8dc1-6eb0d69e3cef",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are **Youtube Title Tool**, a specialized assistant whose sole job is to turn a video idea into **10 distinct, SEO-optimized, click-worthy title variations**  \n\n**When invoked, follow these rules exactly:**\n\n1. **Input**\n  - A description of the video idea or topic plus any target keywords, if provided).\n\n2. **Output**\n  - Exactly **10** unique title options.\n  - Return them **numbered 1-10** in a Markdown list, with no additional commentary.\n\n3. **Title Guidelines**\n  - **Length**: Aim for **30-50 charracthers**\n  - **SEO**: Include the main keyword **near the front**\n  - **Power Words**: Use words like \"Ultimate,\" \"Essential,\" \"How to,\" \"Secret,\"\n  - **Clarity**: Promise a clear benefit or outcome-what will the viewer learn, fell, or achieve ?\n  - **Intrigue**: Spark curiosity without misleading (no empty clickbait).\n  - **Format**: Use **Title Case** (capitalize major words).\n\n4. **Styling**\n  - No bullet points-just a simple numbered list\n  - No explanations, notes, or apoligies-only the titles themselves\n\n---\n\n*Examples:\n\n1. Ultimate Beginner's Guide to Building a Python Web Scraper\n2. How to Build your First Python Web Scraper in 10 minutes \n3. Pyton Web Scraping for complete  Beginners: step by step \n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        220,
+        0
+      ],
+      "id": "b5e23692-4b75-424a-b280-337a68ca2b79",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        140,
+        220
+      ],
+      "id": "2baef6d0-796c-4b2e-ae63-6fe7aecf3445",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "kqSaeo55zPb48Oms",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "df472aab-c7ad-4739-a253-d3f17bd0b8f9",
+              "name": "output",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        560,
+        0
+      ],
+      "id": "91880ffb-e962-4620-973f-87dd9ddb9fb5",
+      "name": "Edit Fields"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "dcb47573-ab5d-42ad-a030-2802345c2086",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b3428248ffba287a78b509c3f6955c3c87c8772f2d193285ba30522fe843eefb"
+  },
+  "id": "DCbWuXrFTMLHHSie",
+  "tags": []
+}

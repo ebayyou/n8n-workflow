@@ -1,0 +1,362 @@
+{
+  "name": "main-ai-agent",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "168aab37-22d6-4ffb-b0ca-147e0f6627a9",
+      "name": "Telegram Trigger",
+      "webhookId": "ad673bba-edb4-425c-877d-9b7c3e7d7bc6",
+      "credentials": {
+        "telegramApi": {
+          "id": "FGU6lKr1A4EVgYYI",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "options": {
+          "systemMessage": "=You are a helpful assistant who helps users automate their YouTube pre-production process.\n\nALWAYS FOLLOW THIS PROCESS:\n\nSTEP 1: CALL THE RESEARCH AGENT\n\nSTEP 2: CALL THE THUMBNAIL AGENT\n\nSTEP 3: CALL THE TITLE AGENT\n\nSTEP 4: \n\n---\n\nFinally, give a concise yet complete response to the user, giving him the full and completed pre-production for this youtube video"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        220,
+        0
+      ],
+      "id": "1d654ddd-cac6-4c04-972b-df88c7f786fa",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        140,
+        200
+      ],
+      "id": "aa1fb2b0-118a-4433-9c94-8647e486f607",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "kqSaeo55zPb48Oms",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        580,
+        0
+      ],
+      "id": "876836c8-3260-484a-aed8-a0bad80b8135",
+      "name": "Telegram",
+      "webhookId": "a4d167da-e142-4588-8b29-d3108b8a6f0d",
+      "credentials": {
+        "telegramApi": {
+          "id": "FGU6lKr1A4EVgYYI",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "This tool is called an AI agent that performs a detailed and thorough web search for our video idea ",
+        "workflowId": {
+          "__rl": true,
+          "value": "YUqAQyvzsRQmzEKd",
+          "mode": "list",
+          "cachedResultName": "reasearch-ai-agent"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "search_query": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('search_query', `A single paragraph clearly describing the video idea and what the agent should look for`, 'string') }}"
+          },
+          "matchingColumns": [
+            "search_query"
+          ],
+          "schema": [
+            {
+              "id": "search_query",
+              "displayName": "search_query",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        420,
+        300
+      ],
+      "id": "4b4eefbc-9b3f-4e5d-add1-ab5b826e8d92",
+      "name": "Research Agent"
+    },
+    {
+      "parameters": {
+        "description": "This tool is called an AI agent that performs a detailed for thumbnail idea video youtube",
+        "workflowId": {
+          "__rl": true,
+          "value": "pbXWrGd4HuRwQWai",
+          "mode": "list",
+          "cachedResultName": "thumbnail-ai-agent"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "idea": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('idea', `A clear on sentences description of the video idea, and what the main promise of the video will be - this will be turned into a clickable youtube thumbnail`, 'string') }}"
+          },
+          "matchingColumns": [
+            "idea"
+          ],
+          "schema": [
+            {
+              "id": "idea",
+              "displayName": "idea",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        600,
+        300
+      ],
+      "id": "40ffeb56-0615-4a86-b6cc-43bf24d070ed",
+      "name": "Thumbnail Agent"
+    },
+    {
+      "parameters": {
+        "content": "## Specialied AI Agent \n",
+        "height": 220,
+        "width": 680,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        360,
+        220
+      ],
+      "id": "20e91915-dbc9-496d-852e-dc276ba70188",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "description": "This tool calls a specialized AI Agent that will return 10 optimized Youtube titles",
+        "workflowId": {
+          "__rl": true,
+          "value": "DCbWuXrFTMLHHSie",
+          "mode": "list",
+          "cachedResultName": "title-ai-agent"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "idea": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('idea', `A clear one-sentences description of what the video idea is about`, 'string') }}"
+          },
+          "matchingColumns": [
+            "idea"
+          ],
+          "schema": [
+            {
+              "id": "idea",
+              "displayName": "idea",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        780,
+        300
+      ],
+      "id": "08d7c88a-78b6-4783-8164-9089b48a11cf",
+      "name": "Title Agent"
+    },
+    {
+      "parameters": {
+        "description": "This tool will call the Script Agent, whic will write the intro, outline and talking points for the youtube video ",
+        "workflowId": {
+          "__rl": true,
+          "value": "7zgJQqeAqJDAFB9p",
+          "mode": "list",
+          "cachedResultName": "script-ai-agent"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "idea": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('idea', `A clear one-paragraph description of what the youtube video should be about in terms of the actual content & script`, 'string') }}"
+          },
+          "matchingColumns": [
+            "idea"
+          ],
+          "schema": [
+            {
+              "id": "idea",
+              "displayName": "idea",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        920,
+        300
+      ],
+      "id": "93582e1c-eacf-4930-9bd6-8dbdd9f06833",
+      "name": "Script Agent"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research Agent": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Thumbnail Agent": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Title Agent": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Script Agent": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "aa662d20-b865-41aa-8f50-b8a379f7c019",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b3428248ffba287a78b509c3f6955c3c87c8772f2d193285ba30522fe843eefb"
+  },
+  "id": "aPLGqraU19cybYDI",
+  "tags": []
+}
